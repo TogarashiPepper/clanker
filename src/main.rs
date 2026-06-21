@@ -1,9 +1,6 @@
 use std::env::var;
-use std::fs::read_to_string;
-use std::process::Command;
-use std::str::from_utf8;
 
-use anyhow::{Result, ensure};
+use anyhow::Result;
 use dotenvy::dotenv;
 use gemini_rust::{Gemini, Message};
 use serenity::all::{ActivityData, Client, GatewayIntents};
@@ -43,7 +40,7 @@ async fn main() -> Result<()> {
 	let api_key = var("GEMINI_API_KEY")?;
 	let gemini_client = Gemini::with_model(api_key, "models/gemini-3.1-flash-lite".to_string())?;
 
-	let system_prompt = read_to_string("assets/prompt.txt")?;
+	let system_prompt = include_str!("../assets/prompt.txt").into();
 
 	let bot_state = BotState {
 		gemini_client,
