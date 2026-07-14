@@ -26,7 +26,7 @@ pub fn body(ctx: &Context) -> Result<RequestBody> {
 		.replace("$tag", &ctx.cache.current_user().tag())
 		.replace("$url", str::from_utf8(&url.stdout)?.trim());
 
-	let messages = vec![RequestMessage::developer(content)];
+	let messages = vec![RequestMessage::system(content)];
 	let model = env::var("OPENAI_MODEL")?;
 
 	Ok(RequestBody { messages, model })
@@ -67,7 +67,7 @@ pub fn parse(message: &Message) -> RequestMessage {
 pub async fn post(body: &mut RequestBody, message: &Message, reply: Option<&Message>) -> Result<String> {
 	if let Some(message) = reply {
 		let content = "Use the following message as context for the message after it.";
-		body.messages.push(RequestMessage::developer(content.into()));
+		body.messages.push(RequestMessage::system(content.into()));
 
 		let parsed = parse(message);
 		body.messages.push(parsed);

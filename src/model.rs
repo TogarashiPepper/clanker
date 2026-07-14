@@ -32,7 +32,7 @@ pub struct RequestImageUrl {
 #[serde(rename_all = "snake_case", tag = "role")]
 pub enum RequestMessage {
 	Assistant(RequestMessageAssistant),
-	Developer(RequestMessageDeveloper),
+	System(RequestMessageSystem),
 	User(RequestMessageUser),
 }
 
@@ -42,7 +42,7 @@ pub struct RequestMessageAssistant {
 }
 
 #[derive(Serialize)]
-pub struct RequestMessageDeveloper {
+pub struct RequestMessageSystem {
 	pub content: String,
 }
 
@@ -99,8 +99,8 @@ impl RequestMessage {
 		Self::Assistant(RequestMessageAssistant { content })
 	}
 
-	pub const fn developer(content: String) -> Self {
-		Self::Developer(RequestMessageDeveloper { content })
+	pub const fn system(content: String) -> Self {
+		Self::System(RequestMessageSystem { content })
 	}
 
 	pub const fn user(content: Vec<RequestContent>, name: String) -> Self {
