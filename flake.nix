@@ -100,7 +100,7 @@
                 inherit buildInputs nativeBuildInputs;
 
                 pname = "clanker";
-                version = "0.2.0";
+                version = "0.1.0";
                 src = ./.;
                 meta.mainProgram = "clanker";
                 cargoLock.lockFile = ./Cargo.lock;
