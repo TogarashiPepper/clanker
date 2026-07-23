@@ -20,7 +20,7 @@ pub fn body(ctx: &Context) -> Result<RequestBody> {
 	let url = match url {
 		Ok(output) if output.status.success() => String::from_utf8(output.stdout)?,
 		Ok(output) => anyhow::bail!("Git Error: {}", String::from_utf8_lossy(&output.stderr).trim()),
-		Err(_) => env::var("GIT_HASH").unwrap_or_else(|_| String::from("unknown")),
+		Err(_) => env::var("GIT_URL").unwrap_or_else(|_| String::from("unknown")),
 	};
 
 	let content = include_str!("../assets/prompt.txt")
