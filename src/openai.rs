@@ -40,7 +40,10 @@ pub fn parse(message: &Message) -> RequestMessage {
 	let mut content = Vec::new();
 
 	if !message.content.is_empty() {
-		content.push(RequestContent::text(message.content.clone()));
+		content.push(RequestContent::text(format!(
+			"{}: {}",
+			message.author.name, message.content
+		)));
 	}
 
 	for url in images {
