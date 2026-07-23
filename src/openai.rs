@@ -1,4 +1,5 @@
 use std::env;
+use std::process::Command;
 
 use anyhow::{Error, Result};
 use reqwest::{Client, Url};
@@ -7,7 +8,24 @@ use serenity::all::{Context, Message};
 use crate::model::{RequestBody, RequestContent, RequestImageUrl, RequestMessage, ResponseBody};
 
 pub fn body(ctx: &Context) -> Result<RequestBody> {
+	let hash = Command::new("git").args(["rev-parse", "--short", "HEAD"]).output();
+	let url = Command::new("git").args(["remote", "get-url", "origin"]).output();
+
+	let hash = match hash {
+		Ok(output) if output.status.success() => String::from_utf8(output.stdout)?,
+		Ok(output) => anyhow::bail!("Git Error: {}", String::from_utf8_lossy(&output.stderr).trim()),
+		Err(_) => env::var("GIT_HASH").unwrap_or_else(|_| String::from("unknown")),
+	};
+
+	let url = match url {
+		Ok(output) if output.status.success() => String::from_utf8(output.stdout)?,
+		Ok(output) => anyhow::bail!("Git Error: {}", String::from_utf8_lossy(&output.stderr).trim()),
+		Err(_) => env::var("GIT_HASH").unwrap_or_else(|_| String::from("unknown")),
+	};
+
 	let content = include_str!("../assets/prompt.txt")
+		.replace("$hash", hash.trim())
+		.replace("$url", url.trim())
 		.replace("$id", &ctx.cache.current_user().id.to_string())
 		.replace("$name", &ctx.cache.current_user().name)
 		.replace("$tag", &ctx.cache.current_user().tag());

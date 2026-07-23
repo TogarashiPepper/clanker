@@ -20,6 +20,8 @@ impl TypeMapKey for History {
 
 #[tokio::main]
 async fn main() -> Result<()> {
+	let _ = dotenvy::dotenv();
+
 	let token = env::var("DISCORD_TOKEN")?;
 	let intents = GatewayIntents::GUILD_MESSAGES | GatewayIntents::MESSAGE_CONTENT;
 
