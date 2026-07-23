@@ -1,5 +1,5 @@
+use std::env;
 use std::process::Command;
-use std::{env, fs};
 
 use anyhow::{Error, Result};
 use reqwest::{Client, Url};
@@ -19,7 +19,7 @@ pub fn body(ctx: &Context) -> Result<RequestBody> {
 		anyhow::bail!("Git error: {}", str::from_utf8(&url.stderr)?.trim());
 	}
 
-	let content = fs::read_to_string("assets/prompt.txt")?
+	let content = include_str!("../assets/prompt.txt")
 		.replace("$hash", str::from_utf8(&hash.stdout)?.trim())
 		.replace("$id", &ctx.cache.current_user().id.to_string())
 		.replace("$name", &ctx.cache.current_user().name)
