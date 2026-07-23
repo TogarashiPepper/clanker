@@ -1,5 +1,4 @@
 use std::env;
-use std::process::Command;
 
 use anyhow::{Error, Result};
 use reqwest::{Client, Url};
@@ -8,23 +7,10 @@ use serenity::all::{Context, Message};
 use crate::model::{RequestBody, RequestContent, RequestImageUrl, RequestMessage, ResponseBody};
 
 pub fn body(ctx: &Context) -> Result<RequestBody> {
-	let hash = Command::new("git").args(["rev-parse", "--short", "HEAD"]).output()?;
-	let url = Command::new("git").args(["remote", "get-url", "origin"]).output()?;
-
-	if !hash.status.success() {
-		anyhow::bail!("Git error: {}", str::from_utf8(&hash.stderr)?.trim());
-	}
-
-	if !url.status.success() {
-		anyhow::bail!("Git error: {}", str::from_utf8(&url.stderr)?.trim());
-	}
-
 	let content = include_str!("../assets/prompt.txt")
-		.replace("$hash", str::from_utf8(&hash.stdout)?.trim())
 		.replace("$id", &ctx.cache.current_user().id.to_string())
 		.replace("$name", &ctx.cache.current_user().name)
-		.replace("$tag", &ctx.cache.current_user().tag())
-		.replace("$url", str::from_utf8(&url.stdout)?.trim());
+		.replace("$tag", &ctx.cache.current_user().tag());
 
 	let messages = vec![RequestMessage::system(content)];
 	let model = env::var("OPENAI_MODEL")?;

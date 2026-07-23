@@ -5,8 +5,6 @@ use serenity::all::{CommandOptionType, CreateCommand, CreateCommandOption, HttpB
 
 #[tokio::main]
 async fn main() -> Result<()> {
-	let _ = dotenvy::dotenv();
-
 	let application_id = env::var("DISCORD_APPLICATION_ID")?.parse()?;
 	let token = env::var("DISCORD_TOKEN")?;
 	let http = HttpBuilder::new(token).application_id(application_id).build();
